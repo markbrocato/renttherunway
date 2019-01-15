@@ -3,6 +3,7 @@ import Header from '../header/Header'
 import { render } from 'react-storefront/renderers'
 import AppModel from '../AppModel'
 import theme from '../theme'
+import createGlobalState from '../globalState'
 
 /**
  * Inserts the PWA header into adapt pages.
@@ -10,47 +11,17 @@ import theme from '../theme'
  */
 export default function renderHeader(stats) {
   const { html } = render({
-    component: <Header/>,
-    state: createState(),
+    component: <Header showPromo={false}/>,
+    state: AppModel.create(createGlobalState()),
     theme,
     stats,
     clientChunk: 'header' // the name of the entry injected into config/web.dev.*.js
   })
 
   // remove the existing header
-  $body.find('header').remove()
+  $body.find('#reb-header-wrapper').remove()
 
   // add the new header and supporting resources to the document
   const $header = $(tag('div', { class: 'mw-header' })).append(html)
-  $body.find('#page-container').attr('id', null).prepend($header)
-}
-
-/**
- * Extracts a menu item from a nav menu element on www.moovweb.com.  The logic here is 
- * specific to www.moovweb.com and only serves an example of extracting MenuModel data from
- * the upstream site.
- * @return {AppModel}
- */
-function createState() {
-  function extractMenuItem() {
-    const el = $(this)
-    const link = el.children('a')
-    const href = link.attr('href')
-    const children = el.find('.sub-menu > .menu-item').map(extractMenuItem).get()
-  
-    return {
-      text: link.text(),
-      url: children.length ? null : href,
-      items: children.length ? children : null
-    }
-  }
-
-  return AppModel.create({ 
-    menu:{
-      levels: [{
-        root: true,
-        items: $body.find('#top-menu > .menu-item').map(extractMenuItem).get()
-      }]
-    }
-  })
+  $body.prepend($header)
 }

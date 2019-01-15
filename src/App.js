@@ -30,7 +30,7 @@ export default class App extends Component {
         <Helmet>
           <link rel="shortcut icon" href="/icons/favicon.ico"/>
         </Helmet>
-        <Header/> 
+        <Header showPromo/> 
         <NavTabs/>
         <Pages
           loadMasks={{

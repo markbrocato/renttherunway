@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
+import PropTypes from 'prop-types'
 import AppBar from 'react-storefront/AppBar'
 import IconButton from '@material-ui/core/IconButton'
 import FindStore from '@material-ui/icons/LocationOn'
 import Search from '@material-ui/icons/Search'
 import Link from 'react-storefront/Link'
 import { withStyles } from '@material-ui/core/styles'
-import Logo from '../assets/moovweb-logo.svg'
+import Logo from '../assets/rtr_logo.svg'
 import CartButton from 'react-storefront/CartButton'
 import HeaderLogo from 'react-storefront/HeaderLogo'
 import Hidden from '@material-ui/core/Hidden'
@@ -49,14 +50,26 @@ import SearchField from 'react-storefront/SearchField'
 
   large: {
     fontSize: '28px'
+  },
+
+  logo: {
+    height: '75%'
   }
 }))
 @inject('app')
 @observer
 export default class Header extends Component {
 
+  static propTypes = {
+    showPromo: PropTypes.bool
+  }
+
+  static defaultProps = {
+    showPromo: false
+  }
+
   render() {
-    const { classes } = this.props
+    const { classes, showPromo } = this.props
 
     const storeFinder = (
       <Link to="/store-finder">
@@ -70,7 +83,7 @@ export default class Header extends Component {
 
     return (
       <div>
-        <AppBar classes={{ root: classes.root }} menuAlign="right">
+        <AppBar classes={{ root: classes.root }} menuAlign="right" menuIconProps={{ label: false }}>
           <Menu align="right" useExpanders/>
           <Hidden mdUp implementation="css">{ storeFinder }</Hidden>
           <Hidden mdUp implementation="css">
@@ -78,7 +91,7 @@ export default class Header extends Component {
               <Search className={classes.icon}/>
             </IconButton>
           </Hidden>
-          <HeaderLogo>
+          <HeaderLogo classes={{ logoWrap: classes.logo }}>
             <Logo />
           </HeaderLogo>
           <div style={{ flex: 1 }}/>
@@ -88,7 +101,7 @@ export default class Header extends Component {
           <Hidden smDown implementation="css">{ storeFinder }</Hidden>
           <CartButton classes={{ icon: classes.icon }}/>
         </AppBar>
-        <PromoBanner className={classes.promo} src={promo} />
+        { showPromo ? <PromoBanner className={classes.promo} src={promo} /> : null }
       </div>
     )
   }
