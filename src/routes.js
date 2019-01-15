@@ -1,7 +1,7 @@
 import { Router, fromClient, fromServer, cache, proxyUpstream } from 'react-storefront/router'
 
 // See guide to caching on Moov XDN: https://pwa.moovweb.com/guides/caching
-const cacheHandler = cache({ server: { maxAgeSeconds: 1000 }, client: true }) // cache responses in varnish for 5 minutes
+const cacheHandler = cache({ server: { maxAgeSeconds: 300 }, client: true }) // cache responses in varnish for 5 minutes
 
 // See guide to routing: https://pwa.moovweb.com/guides/routing
 export default new Router()
@@ -12,8 +12,7 @@ export default new Router()
   )
   .get('/products',
     cacheHandler,
-    fromClient({ page: 'Subcategory' }),
-    fromServer('./subcategory/subcategory-handler')
+    proxyUpstream('./proxy/proxy-handler')
   )
   .get('/c/:id',
     cacheHandler,
