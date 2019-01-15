@@ -6,13 +6,14 @@ const cacheHandler = cache({ server: { maxAgeSeconds: 300 }, client: true }) // 
 // See guide to routing: https://pwa.moovweb.com/guides/routing
 export default new Router()
   .get('/', 
-    cacheHandler,
+    cache({ server: { maxAgeSeconds: 10000 }, client: true }),
     fromClient({ page: 'Home' }),
     fromServer('./home/home-handler')
   )
   .get('/products',
     cacheHandler,
-    proxyUpstream('./proxy/proxy-handler')
+    fromClient({ page: 'Subcategory' }),
+    fromServer('./subcategory/subcategory-handler')
   )
   .get('/c/:id',
     cacheHandler,
